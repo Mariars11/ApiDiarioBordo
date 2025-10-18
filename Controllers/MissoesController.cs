@@ -1,4 +1,4 @@
-using DiarioBordo.Context;
+using DiarioBordo.IServices;
 using DiarioBordo.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,16 +8,15 @@ namespace DiarioBordo.Controlles;
 [ApiController]
 public class MissoesController : ControllerBase
 {
-    private readonly AppDbContext _context;
-    public MissoesController(AppDbContext context)
+    private readonly IMissaoService _missaoService;
+    public MissoesController(IMissaoService missaoService)
     {
-        _context = context;
+        _missaoService = missaoService;
     }
-
     [HttpGet]
     public ActionResult<IEnumerable<Missao>> GetMissoes()
     {
-        var missoes = _context.Missoes.ToList();
+        var missoes = _missaoService.GetMissoes();
 
         if (missoes is null)
         {
@@ -30,7 +29,7 @@ public class MissoesController : ControllerBase
     [HttpGet("{id:int}", Name="ObterMissao")]
     public ActionResult<Missao> GetMissao(int id)
     {
-        var missao = _context.Missoes.FirstOrDefault(n => n.Id == id);
+        var missao = _missaoService.GetMissao(id);
 
         if (missao is null)
         {
@@ -43,13 +42,40 @@ public class MissoesController : ControllerBase
     [HttpPost]
     public ActionResult PostMissao(Missao missao)
     {
-        if(missao is null)
+        if (missao is null)
         {
             return BadRequest();
         }
-        _context.Missoes.Add(missao);
-        _context.SaveChanges();
+
+        _missaoService.PostMissao(missao);
 
         return new CreatedAtRouteResult("ObterMissao", new { id = missao.Id }, missao);
+    }
+
+    [HttpPut("{id:int}")]
+    public ActionResult PutMissao(int id, Missao missao)
+    {
+        if (id != missao.Id)
+        {
+            return BadRequest($"Id \"{id}\" não corresponde à missão informada!");
+        }
+
+        _missaoService.PutMissao(id, missao);
+
+        return Ok(missao);
+    }
+    
+    [HttpDelete("{id:int}")]
+    public ActionResult DeleteMissao(int id)
+    {
+        var missao = _missaoService.GetMissao(id);
+        if (missao is null)
+        {
+            return NotFound($"Missão de id \"{id}\" não encontrada!");
+        }
+        
+        _missaoService.DeleteMissao(id);
+        
+        return Ok("Missão excluída com sucesso");
     }
 }

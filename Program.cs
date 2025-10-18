@@ -1,10 +1,17 @@
 using System.Text.Json.Serialization;
 using DiarioBordo.Context;
+using DiarioBordo.IServices;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddScoped<IMissaoService, MissaoService>();
+builder.Services.AddScoped<IPlanetaService, PlanetaService>();
+builder.Services.AddScoped<INaveService, NaveService>();
+builder.Services.AddScoped<ITripulanteService, TripulanteService>();
+
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

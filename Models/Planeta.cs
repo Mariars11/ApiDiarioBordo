@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace DiarioBordo.Models;
 
@@ -10,5 +11,6 @@ public class Planeta
     }
     public int Id { get; set; }
     public string Nome { get; set; }
+    [JsonIgnore]
     public ICollection<Missao>? Missoes { get; set; }
 }

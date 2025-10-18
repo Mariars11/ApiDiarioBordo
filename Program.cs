@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using DiarioBordo.Context;
+using DiarioBordo.Filters;
 using DiarioBordo.IServices;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +11,13 @@ builder.Services.AddScoped<IMissaoService, MissaoService>();
 builder.Services.AddScoped<IPlanetaService, PlanetaService>();
 builder.Services.AddScoped<INaveService, NaveService>();
 builder.Services.AddScoped<ITripulanteService, TripulanteService>();
+builder.Services.AddSingleton<ApiLoggingFilter>();
 
 
-
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<CustomExceptionFilter>();
+}).AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
@@ -37,6 +41,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

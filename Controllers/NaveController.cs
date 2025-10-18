@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
-[Route("[controller]")]
+[Route("v1/api/[controller]")]
 [ApiController]
 public class NavesController : ControllerBase
 {
@@ -26,7 +26,7 @@ public class NavesController : ControllerBase
         return Ok(naves);
     }
 
-    [HttpGet("{id:int}", Name="ObterNave")]
+    [HttpGet("{id:int:min(1)}", Name="ObterNave")]
     public ActionResult<Nave> GetNave(int id)
     {
         var nave = _naveService.GetNave(id);
@@ -40,7 +40,7 @@ public class NavesController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult PostNave(Nave nave)
+    public IActionResult PostNave(Nave nave)
     {
         if (nave is null)
         {
@@ -52,8 +52,8 @@ public class NavesController : ControllerBase
         return new CreatedAtRouteResult("ObterNave", new { id = nave.Id }, nave);
     }
 
-    [HttpPut("{id:int}")]
-    public ActionResult PutNave(int id, Nave nave)
+    [HttpPut("{id:int:min(1)}")]
+    public IActionResult PutNave(int id, Nave nave)
     {
         if (id != nave.Id)
         {
@@ -65,8 +65,8 @@ public class NavesController : ControllerBase
         return Ok(nave);
     }
     
-    [HttpDelete("{id:int}")]
-    public ActionResult DeleteNave(int id)
+    [HttpDelete("{id:int:min(1)}")]
+    public IActionResult DeleteNave(int id)
     {
         var nave = _naveService.GetNave(id);
         if (nave is null)

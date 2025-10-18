@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
-[Route("[controller]")]
+[Route("v1/api/[controller]")]
 [ApiController]
 public class PlanetasController : ControllerBase
 {
@@ -26,7 +26,7 @@ public class PlanetasController : ControllerBase
         return Ok(planetas);
     }
 
-    [HttpGet("{id:int}", Name="ObterPlaneta")]
+    [HttpGet("{id:int:min(1)}", Name="ObterPlaneta")]
     public ActionResult<Planeta> GetPlaneta(int id)
     {
         var planeta = _planetaService.GetPlaneta(id);
@@ -40,7 +40,7 @@ public class PlanetasController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult PostPlaneta(Planeta planeta)
+    public IActionResult PostPlaneta(Planeta planeta)
     {
         if (planeta is null)
         {
@@ -52,12 +52,12 @@ public class PlanetasController : ControllerBase
         return new CreatedAtRouteResult("ObterPlaneta", new { id = planeta.Id }, planeta);
     }
 
-    [HttpPut("{id:int}")]
-    public ActionResult PutPlaneta(int id, Planeta planeta)
+    [HttpPut("{id:int:min(1)}")]
+    public IActionResult PutPlaneta(int id, Planeta planeta)
     {
         if (id != planeta.Id)
         {
-            return BadRequest($"Id \"{id}\" não corresponde à missão informada!");
+            return BadRequest($"Id \"{id}\" não corresponde ao planeta informado!");
         }
 
         _planetaService.PutPlaneta(id, planeta);
@@ -65,17 +65,17 @@ public class PlanetasController : ControllerBase
         return Ok(planeta);
     }
     
-    [HttpDelete("{id:int}")]
-    public ActionResult DeletePlaneta(int id)
+    [HttpDelete("{id:int:min(1)}")]
+    public IActionResult DeletePlaneta(int id)
     {
         var planeta = _planetaService.GetPlaneta(id);
         if (planeta is null)
         {
-            return NotFound($"Missão de id \"{id}\" não encontrada!");
+            return NotFound($"Planeta de id \"{id}\" não encontrado!");
         }
         
         _planetaService.DeletePlaneta(id);
         
-        return Ok("Missão excluída com sucesso");
+        return Ok("Planeta excluído com sucesso");
     }
 }

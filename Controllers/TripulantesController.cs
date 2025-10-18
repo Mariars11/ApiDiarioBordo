@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
-[Route("[controller]")]
+[Route("v1/api/[controller]")]
 [ApiController]
 public class TripulantesController : ControllerBase
 {
@@ -26,7 +26,7 @@ public class TripulantesController : ControllerBase
         return Ok(tripulantes);
     }
 
-    [HttpGet("{id:int}", Name="ObterTripulante")]
+    [HttpGet("{id:int:min(1)}", Name="ObterTripulante")]
     public ActionResult<Tripulante> GetTripulante(int id)
     {
         var tripulante = _tripulanteService.GetTripulante(id);
@@ -40,7 +40,7 @@ public class TripulantesController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult PostTripulante(Tripulante tripulante)
+    public IActionResult PostTripulante(Tripulante tripulante)
     {
         if (tripulante is null)
         {
@@ -52,12 +52,12 @@ public class TripulantesController : ControllerBase
         return new CreatedAtRouteResult("ObterTripulante", new { id = tripulante.Id }, tripulante);
     }
 
-    [HttpPut("{id:int}")]
-    public ActionResult PutTripulante(int id, Tripulante tripulante)
+    [HttpPut("{id:int:min(1)}")]
+    public IActionResult PutTripulante(int id, Tripulante tripulante)
     {
         if (id != tripulante.Id)
         {
-            return BadRequest($"Id \"{id}\" não corresponde à missão informada!");
+            return BadRequest($"Id \"{id}\" não corresponde ao tripulante informado!");
         }
 
         _tripulanteService.PutTripulante(id, tripulante);
@@ -65,8 +65,8 @@ public class TripulantesController : ControllerBase
         return Ok(tripulante);
     }
     
-    [HttpDelete("{id:int}")]
-    public ActionResult DeleteTripulante(int id)
+    [HttpDelete("{id:int:min(1)}")]
+    public IActionResult DeleteTripulante(int id)
     {
         var tripulante = _tripulanteService.GetTripulante(id);
         if (tripulante is null)
@@ -76,6 +76,6 @@ public class TripulantesController : ControllerBase
         
         _tripulanteService.DeleteTripulante(id);
         
-        return Ok("Missão excluída com sucesso");
+        return Ok("Tripulanete excluído com sucesso");
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DiarioBordo.Migrations
+namespace DiarioDeBordo.Migrations
 {
     /// <inheritdoc />
     public partial class MigracaoInicial : Migration
@@ -39,6 +39,21 @@ namespace DiarioBordo.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Usuario = table.Column<string>(type: "TEXT", nullable: false),
+                    SenhaHash = table.Column<string>(type: "TEXT", nullable: false),
+                    Role = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tripulantes",
                 columns: table => new
                 {
@@ -46,7 +61,7 @@ namespace DiarioBordo.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Nome = table.Column<string>(type: "TEXT", nullable: false),
                     Cargo = table.Column<string>(type: "TEXT", nullable: false),
-                    NaveId = table.Column<int>(type: "INTEGER", nullable: true)
+                    NaveId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -55,7 +70,8 @@ namespace DiarioBordo.Migrations
                         name: "FK_Tripulantes_Naves_NaveId",
                         column: x => x.NaveId,
                         principalTable: "Naves",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,6 +129,9 @@ namespace DiarioBordo.Migrations
 
             migrationBuilder.DropTable(
                 name: "Tripulantes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Planetas");

@@ -95,3 +95,23 @@ dotnet ef database update
 
 ```
 
+## Filters
+
+- CustomExceptionFilter.cs
+
+    - Filtra as exceções
+
+- ApiLoggingFilter.cs
+
+    - Adiciona log no console
+
+## JWT
+
+```
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.10
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore
+
+dotnet user-jwts create
+
+dotnet user-jwts list
+```

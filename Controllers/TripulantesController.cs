@@ -1,11 +1,15 @@
+using DiarioBordo.Filters;
 using DiarioBordo.IServices;
 using DiarioBordo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
 [Route("v1/api/[controller]")]
 [ApiController]
+[ServiceFilter(typeof(ApiLoggingFilter))]
+[TypeFilter(typeof(CustomExceptionFilter))]
 public class TripulantesController : ControllerBase
 {
     private readonly ITripulanteService _tripulanteService;
@@ -13,6 +17,7 @@ public class TripulantesController : ControllerBase
     {
         _tripulanteService = tripulanteService;
     }
+    [Authorize]
     [HttpGet]
     public ActionResult<IEnumerable<Tripulante>> GetTripulantes()
     {
@@ -25,8 +30,9 @@ public class TripulantesController : ControllerBase
 
         return Ok(tripulantes);
     }
-
-    [HttpGet("{id:int:min(1)}", Name="ObterTripulante")]
+    
+    [Authorize]
+    [HttpGet("{id:int:min(1)}", Name = "ObterTripulante")]
     public ActionResult<Tripulante> GetTripulante(int id)
     {
         var tripulante = _tripulanteService.GetTripulante(id);
@@ -38,7 +44,8 @@ public class TripulantesController : ControllerBase
 
         return Ok(tripulante);
     }
-
+    
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult PostTripulante(Tripulante tripulante)
     {
@@ -52,6 +59,7 @@ public class TripulantesController : ControllerBase
         return new CreatedAtRouteResult("ObterTripulante", new { id = tripulante.Id }, tripulante);
     }
 
+    [Authorize(Roles = "Admin,BackOffice")]
     [HttpPut("{id:int:min(1)}")]
     public IActionResult PutTripulante(int id, Tripulante tripulante)
     {
@@ -64,7 +72,8 @@ public class TripulantesController : ControllerBase
 
         return Ok(tripulante);
     }
-    
+
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int:min(1)}")]
     public IActionResult DeleteTripulante(int id)
     {

@@ -12,6 +12,8 @@ public class AppDbContext : DbContext
     public DbSet<Missao> Missoes { get; set; }
     public DbSet<Nave> Naves {get; set;}
     public DbSet<Planeta> Planetas {get; set;}
-    public DbSet<Tripulante> Tripulantes {get; set;}
+    public DbSet<Tripulante> Tripulantes { get; set; }
+    
+    public DbSet<User> Users {get; set;}
     
 }

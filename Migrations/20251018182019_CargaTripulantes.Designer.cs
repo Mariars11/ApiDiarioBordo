@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiarioBordo.Migrations
+namespace DiarioDeBordo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251018003343_MigracaoInicial")]
-    partial class MigracaoInicial
+    [Migration("20251018182019_CargaTripulantes")]
+    partial class CargaTripulantes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -102,7 +102,7 @@ namespace DiarioBordo.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("NaveId")
+                    b.Property<int>("NaveId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nome")
@@ -114,6 +114,29 @@ namespace DiarioBordo.Migrations
                     b.HasIndex("NaveId");
 
                     b.ToTable("Tripulantes");
+                });
+
+            modelBuilder.Entity("DiarioBordo.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("DiarioBordo.Models.Missao", b =>
@@ -137,9 +160,13 @@ namespace DiarioBordo.Migrations
 
             modelBuilder.Entity("DiarioBordo.Models.Tripulante", b =>
                 {
-                    b.HasOne("DiarioBordo.Models.Nave", null)
+                    b.HasOne("DiarioBordo.Models.Nave", "NaveNavigation")
                         .WithMany("Tripulantes")
-                        .HasForeignKey("NaveId");
+                        .HasForeignKey("NaveId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("NaveNavigation");
                 });
 
             modelBuilder.Entity("DiarioBordo.Models.Nave", b =>

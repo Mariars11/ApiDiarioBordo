@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DiarioBordo.Migrations
+namespace DiarioDeBordo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251018023522_CargaTripulantes")]
-    partial class CargaTripulantes
+    [Migration("20251018181940_CargaNave")]
+    partial class CargaNave
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,6 +114,29 @@ namespace DiarioBordo.Migrations
                     b.HasIndex("NaveId");
 
                     b.ToTable("Tripulantes");
+                });
+
+            modelBuilder.Entity("DiarioBordo.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("DiarioBordo.Models.Missao", b =>

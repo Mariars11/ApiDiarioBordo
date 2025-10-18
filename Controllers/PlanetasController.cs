@@ -1,11 +1,15 @@
+using DiarioBordo.Filters;
 using DiarioBordo.IServices;
 using DiarioBordo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
 [Route("v1/api/[controller]")]
 [ApiController]
+[ServiceFilter(typeof(ApiLoggingFilter))]
+[TypeFilter(typeof(CustomExceptionFilter))]
 public class PlanetasController : ControllerBase
 {
     private readonly IPlanetaService _planetaService;
@@ -13,6 +17,8 @@ public class PlanetasController : ControllerBase
     {
         _planetaService = planetaService;
     }
+
+    [Authorize]
     [HttpGet]
     public ActionResult<IEnumerable<Planeta>> GetPlanetas()
     {
@@ -26,7 +32,8 @@ public class PlanetasController : ControllerBase
         return Ok(planetas);
     }
 
-    [HttpGet("{id:int:min(1)}", Name="ObterPlaneta")]
+    [Authorize]
+    [HttpGet("{id:int:min(1)}", Name = "ObterPlaneta")]
     public ActionResult<Planeta> GetPlaneta(int id)
     {
         var planeta = _planetaService.GetPlaneta(id);
@@ -39,6 +46,7 @@ public class PlanetasController : ControllerBase
         return Ok(planeta);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult PostPlaneta(Planeta planeta)
     {
@@ -52,6 +60,7 @@ public class PlanetasController : ControllerBase
         return new CreatedAtRouteResult("ObterPlaneta", new { id = planeta.Id }, planeta);
     }
 
+    [Authorize(Roles = "Admin, BackOffice")]
     [HttpPut("{id:int:min(1)}")]
     public IActionResult PutPlaneta(int id, Planeta planeta)
     {
@@ -65,6 +74,7 @@ public class PlanetasController : ControllerBase
         return Ok(planeta);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int:min(1)}")]
     public IActionResult DeletePlaneta(int id)
     {

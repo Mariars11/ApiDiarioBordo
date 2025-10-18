@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace DiarioBordo.Migrations
+namespace DiarioDeBordo.Migrations
 {
     /// <inheritdoc />
-    public partial class CargaPlanetas : Migration
+    public partial class CargaPlaneta : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder mb)

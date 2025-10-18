@@ -1,11 +1,15 @@
+using DiarioBordo.Filters;
 using DiarioBordo.IServices;
 using DiarioBordo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
 
 [Route("v1/api/[controller]")]
 [ApiController]
+[ServiceFilter(typeof(ApiLoggingFilter))]
+[TypeFilter(typeof(CustomExceptionFilter))]
 public class NavesController : ControllerBase
 {
     private readonly INaveService _naveService;
@@ -13,6 +17,8 @@ public class NavesController : ControllerBase
     {
         _naveService = naveService;
     }
+
+    [Authorize]
     [HttpGet]
     public ActionResult<IEnumerable<Nave>> GetNaves()
     {
@@ -25,8 +31,8 @@ public class NavesController : ControllerBase
 
         return Ok(naves);
     }
-
-    [HttpGet("{id:int:min(1)}", Name="ObterNave")]
+    [Authorize]
+    [HttpGet("{id:int:min(1)}", Name = "ObterNave")]
     public ActionResult<Nave> GetNave(int id)
     {
         var nave = _naveService.GetNave(id);
@@ -38,7 +44,8 @@ public class NavesController : ControllerBase
 
         return Ok(nave);
     }
-
+    
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public IActionResult PostNave(Nave nave)
     {
@@ -52,6 +59,7 @@ public class NavesController : ControllerBase
         return new CreatedAtRouteResult("ObterNave", new { id = nave.Id }, nave);
     }
 
+    [Authorize(Roles = "BackOffice")]
     [HttpPut("{id:int:min(1)}")]
     public IActionResult PutNave(int id, Nave nave)
     {
@@ -65,6 +73,7 @@ public class NavesController : ControllerBase
         return Ok(nave);
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int:min(1)}")]
     public IActionResult DeleteNave(int id)
     {

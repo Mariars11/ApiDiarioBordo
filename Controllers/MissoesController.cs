@@ -1,6 +1,7 @@
 using DiarioBordo.Filters;
 using DiarioBordo.IServices;
 using DiarioBordo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DiarioBordo.Controlles;
@@ -16,6 +17,8 @@ public class MissoesController : ControllerBase
     {
         _missaoService = missaoService;
     }
+
+    [Authorize]
     [HttpGet]
     public ActionResult<IEnumerable<Missao>> GetMissoes()
     {
@@ -28,8 +31,9 @@ public class MissoesController : ControllerBase
 
         return Ok(missoes);
     }
-
-    [HttpGet("{id:int:min(1)}", Name="ObterMissao")]
+    
+    [Authorize]
+    [HttpGet("{id:int:min(1)}", Name = "ObterMissao")]
     public ActionResult<Missao> GetMissao(int id)
     {
         var missao = _missaoService.GetMissao(id);
@@ -43,6 +47,7 @@ public class MissoesController : ControllerBase
         return Ok(missao);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public ActionResult PostMissao(Missao missao)
     {
@@ -56,6 +61,7 @@ public class MissoesController : ControllerBase
         return new CreatedAtRouteResult("ObterMissao", new { id = missao.Id }, missao);
     }
 
+    [Authorize(Roles = "Admin, BackOffice")]
     [HttpPut("{id:int:min(1)}")]
     public ActionResult PutMissao(int id, Missao missao)
     {
@@ -69,6 +75,7 @@ public class MissoesController : ControllerBase
         return Ok(missao);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int:min(1)}")]
     public ActionResult DeleteMissao(int id)
     {
@@ -83,12 +90,14 @@ public class MissoesController : ControllerBase
         return Ok("Missão excluída com sucesso");
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpGet("erro500")]
     public IActionResult TesteErro500()
     {
         throw new Exception("Erro de teste!");
     }
     
+    [Authorize(Roles = "Admin")]
     [HttpGet("erro400")]
     public IActionResult TesteErro400()
     {
